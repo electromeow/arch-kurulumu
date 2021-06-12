@@ -23,7 +23,7 @@ ping -c 5 google.com
 
 - Eğer internet kablosu ile bağlandıysanız zaten internet bağlantınız olacaktır.
 - Eğer Wi-Fi kullanıyorsanız `wifi-menu` komutu ile Wi-Fi ağınıza bağlanın.
-- Eğer internete iki şekilde de bağlanamıyorsanız telefonuzu bilgisayara bağlayıp USB bağlantı ayarlarından `Ağ Paylaşma` seçeneğini seçerek bağlanabilirsiniz.
+- Eğer internete iki şekilde de bağlanamıyorsanız telefonunuzu bilgisayara bağlayıp USB bağlantı ayarlarından `Ağ Paylaşma` seçeneğini seçerek bağlanabilirsiniz.
 - Eğer bağlandıysanız devam edelim.
 
 ### Sistem Tarihini Güncelle

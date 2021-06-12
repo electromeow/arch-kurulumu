@@ -119,8 +119,6 @@ swapon /dev/[swap bölüm adı]
 mount /dev/[root bölüm adı] /mnt
 ```
 
-</br>
-
 ## Asıl Sistem Kurulumu
 
 ### Yansıları Reflector Aracını Kullanarak Güncelle
@@ -145,8 +143,6 @@ pacstrap /mnt base base-devel linux-lts linux-firmware linux-lts-headers nano in
 ```bash
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
-
-</br>
 
 ## Chroot'a Gir
 
@@ -180,7 +176,7 @@ ln -sf /usr/share/zoneinfo/Europe/Istanbul /etc/localtime
 hwclock --systohc
 ```
 
-Kendi saat diliminize göre `/Europe/Istanbul` kısmını değişebilirsiniz. Daha fazla bilgi için **[Buraya](https://wiki.archlinux.org/title/installation_guide#Time_zone)** göz atın.
+Kendi saat diliminize göre `/Europe/Istanbul` kısmını değişebilirsiniz. Daha fazla bilgi için **[buraya](https://wiki.archlinux.org/title/installation_guide#Time_zone)** göz atın.
 
 ## Dili Ayarla
 
@@ -204,7 +200,7 @@ kaydet ve çıkın.
 locale-gen
 ```
 
-### locale.conf Dosyasına LANG Ekle
+### locale.conf Dosyasına Dili Ekle
 
 ```bash
 echo LANG=tr_TR.UTF-8 > /etc/locale.conf
@@ -230,7 +226,7 @@ echo arch > /etc/hostname
 nano /etc/hosts
 ```
 
-#### Alttaki Satırları Ekle
+alttaki Satırları Ekle
 
 ```
 127.0.0.1    localhost
@@ -238,8 +234,7 @@ nano /etc/hosts
 127.0.1.1    arch.localdomain arch
 ```
 
-`arch` kısmını bilgisayara koyduğunuz isim ile değiştirin.
-kaydet ve çık.
+`arch` kısmını bilgisayara koyduğunuz isim ile değiştirin. Kaydedin ve çıkın.
 
 ### NetworkManager Kurup Aktifleştir
 
@@ -272,7 +267,7 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 grub-install /dev/[disk adı]
 ```
 
-### GRUB Yapılandırma Dosyasını Oluştur
+#### GRUB Yapılandırma Dosyasını Oluştur
 
 ```bash
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -286,11 +281,9 @@ umount -a
 reboot
 ```
 
-</br>
+## Şimdi Kurulu Olan Arch Linux Sisteminizi Açın.
 
-## Şimdi kurulu olan Arch Linux sisteminizi açın.
-
-### Root olarak giriş yapın
+### Root Olarak Giriş Yapın
 
 ### Yeni Kullanıcı Oluştur
 
@@ -368,6 +361,10 @@ sudo pacman -S lib32-mesa
 
 ### Masaüstü Ortamı Kur
 
+```bash
+pacman -S [masaüstü ortamı]
+```
+
 | Masaüstü Ortamı | Paket İsmi  |
 | --------------- | ----------- |
 | GNOME           | gnome       |
@@ -401,13 +398,9 @@ sudo pacman -S pulseaudio
 reboot
 ```
 
-</br>
-
 ### Sonuç
 
-Yeniden başlattıktan sonra her şey hazır bir şekilde Giriş arayüzüne ulaşmış olacaksınız. Deneyimi iyileştirmek amacıyla aşağıdaki bazı ekstra adımları da uygulayabilirsiniz.
-
-</br>
+Yeniden başlattıktan sonra her şey hazır bir şekilde arayüze ulaşmış olacaksınız. Deneyimi iyileştirmek amacıyla aşağıdaki bazı ekstra adımları da uygulayabilirsiniz.
 
 ## Ekstalar (isteğe bağlı)
 
@@ -438,8 +431,6 @@ yay -S pulseeffects-git
 ```bash
 pacman -S ttf-dejavu ttf-droid noto-fonts noto-fonts-emoji ttf-roboto
 ```
-
-</br>
 
 ## Performans İyileştirmeleri
 

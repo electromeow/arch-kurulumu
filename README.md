@@ -4,8 +4,6 @@
 
 Herkese merhaba, bu rehber minimal bir şekilde tamamen sıfırdan sıfırdan sağlıklı şekilde Arch Linux kurulumunu anlatmaktadır.
 
-<br />
-
 ## Başlayalım
 
 - **[Arch Linux indirme sayfasından](https://www.archlinux.org/download/)** Arch Linux'u indirip bir belleğe yazdıralım.

@@ -36,8 +36,7 @@ timedatectl set-ntp true
 
 ## Diski Kurulum İçin Ayarlama
 
-> :warning: Disklerinizi yönetirken son derece dikkatli olun, değerli silerseniz beni suçlamayın.
-> Disk bölümleme formatı (sisteminize göre UEFI ya da MBR kullanın).
+> :warning: Disklerinizi yönetirken son derece dikkatli olun, verileriniz silinirse beni suçlamayın.
 
 ## UEFI Sistem İçin
 

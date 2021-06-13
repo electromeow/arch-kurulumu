@@ -258,6 +258,7 @@ pacman -S grub
 #### UEFI Sistem İçin
 
 ```bash
+pacman -S efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 ```
 
@@ -301,6 +302,8 @@ passwd [kullanıcı adı]
 
 ### Wheel Grubunu Sudo Kullanılabilir Olarak Ayarla
 
+Sudoers dosyasını açın.
+
 ```bash
 EDITOR=nano visudo
 ```
@@ -311,7 +314,7 @@ Alttaki satırı bulup yorumu kaldırın.
 #%wheel ALL=(ALL) ALL
 ```
 
-kaydet ve çık.
+kaydedin ve çıkın.
 
 ### Root'tan Çıkış Yap
 

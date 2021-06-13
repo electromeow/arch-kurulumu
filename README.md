@@ -340,25 +340,6 @@ sudo pacman -S xorg [xf86-video-(gpu-markan)]
 - Eski Radeon GPUlar için (HD 7xxx ve altı) `ati` yazın.
 - Gömülü Intel HD Graphics için `intel` yazın.
 
-<!-- ### Enable Multilib Repo (optional)
-
-multilib contains 32-bit software and libraries that can be used to run and build 32-bit applications on 64-bit installs (e.g. [Wine](https://www.winehq.org/), [Steam](https://store.steampowered.com/), etc).
-
-Edit `/etc/pacman.conf` & uncomment the below two lines.
-
-```
-#[multilib]
-#Include = /etc/pacman.d/mirrorlist
-```
-
-#### MESA Libraries (32bit)
-
-This package is required by Steam if you play games using Vulkan Backend.
-
-```
-sudo pacman -S lib32-mesa
-``` -->
-
 ### Masaüstü Ortamı Kur
 
 ```bash
@@ -389,7 +370,7 @@ sudo pacman -S [dm]
 ### Ses Sürücüleri
 
 ```bash
-sudo pacman -S pulseaudio
+sudo pacman -S pulseaudio pulseaudio-alsa
 ```
 
 ### Yeniden Başlat

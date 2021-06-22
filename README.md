@@ -22,7 +22,8 @@ ping -c 5 google.com
 ```
 
 - Eğer internet kablosu ile bağlandıysanız zaten internet bağlantınız olacaktır.
-- Eğer Wi-Fi kullanıyorsanız `iwctl` ile Wi-Fi ağınıza bağlanın. (Altta kullanım var.)
+- Eğer Wi-Fi kullanıyorsanız `wifi-menu` yazarak Wi-Fi ağınıza bağlanabilirsiniz.
+- Eğer `wifi-menu` sizde yok ise, `iwctl` ile Wi-Fi ağınıza bağlanabilirsiniz. (Altta kullanım var.)
 - Eğer internete iki şekilde de bağlanamıyorsanız telefonunuzu bilgisayara bağlayıp USB bağlantı ayarlarından `Ağ Paylaşma` seçeneğini seçerek bağlanabilirsiniz.
 - Eğer bağlandıysanız devam edelim.
 

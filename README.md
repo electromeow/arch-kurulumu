@@ -22,9 +22,19 @@ ping -c 5 google.com
 ```
 
 - Eğer internet kablosu ile bağlandıysanız zaten internet bağlantınız olacaktır.
-- Eğer Wi-Fi kullanıyorsanız `wifi-menu` komutu ile Wi-Fi ağınıza bağlanın.
+- Eğer Wi-Fi kullanıyorsanız `wifi-menu` yazarak Wi-Fi ağınıza bağlanabilirsiniz.
+- Eğer `wifi-menu` sizde yok ise, `iwctl` ile Wi-Fi ağınıza bağlanabilirsiniz. (Altta kullanım var.)
 - Eğer internete iki şekilde de bağlanamıyorsanız telefonunuzu bilgisayara bağlayıp USB bağlantı ayarlarından `Ağ Paylaşma` seçeneğini seçerek bağlanabilirsiniz.
 - Eğer bağlandıysanız devam edelim.
+
+### Iwctl ile Wi-Fi Ağına Bağlanmak
+Öncelikle `iwctl` komutunu yazalım.
+
+Şimdi bağlı olan adaptörleri listelemek için `device list` yazıyoruz. Böylece tüm liste size gelicektir. Adaptörün name kısmı büyük ihtimal `wlan0` olucaktır, ama farklı bir ismi varsa bu kısımdaki `wlan0` yerine sizinki ile değiştirebilirsiniz.
+
+Sırada ağları bulmak var. `station wlan0 scan` ve sonra `station wlan0 get-networks` yazarak ağları listeleyelim.
+
+Son olarak bu listeden kendi internetimizi bulup bağlanmak kaldı. Bunun için `station wlan0 connect <isim>` yazıp enter tuşuna basıyoruz. Bizden bir şifre isteyecek, Wi-Fi ağınızın şifresini yazarak devam edin ve artık büyük ihtimal bağlanmış olucaksınız. Artık `exit` yazarak iwctl içinden çıkabilir ve kuruluma devam edebilirsiniz.
 
 ### Sistem Tarihini Güncelle
 

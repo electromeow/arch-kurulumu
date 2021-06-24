@@ -36,9 +36,10 @@ Sırada ağları bulmak var. `station wlan0 scan` ve sonra `station wlan0 get-ne
 
 Son olarak bu listeden kendi internetimizi bulup bağlanmak kaldı. Bunun için `station wlan0 connect <isim>` yazıp enter tuşuna basıyoruz. Bizden bir şifre isteyecek, Wi-Fi ağınızın şifresini yazarak devam edin ve artık büyük ihtimal bağlanmış olucaksınız. Artık `exit` yazarak iwctl içinden çıkabilir ve kuruluma devam edebilirsiniz.
 
-### Sistem Tarihini Güncelle
+### Sistem Tarihini Güncelle ve Zaman dilimini Türkiye olarak ayarla
 
 ```bash
+timedatectl set-timezone Europe/Istanbul
 timedatectl set-ntp true
 ```
 
@@ -52,25 +53,36 @@ timedatectl set-ntp true
 
 ### Disk Bölümleme (UEFI için)
 
-`gdisk` aracı ile diskimizde `EFI Boot ve Root` olmak üzere 2 bölüm açacağız.
-
-- Eğer diskiniz yeni ise ve bölümleme tablosu bulunamadıysa, `g` tuşuna basarak GPT Bölüm tablosu oluşturun.
+`gdisk` aracı ile diskimizde `EFI Boot, Swap ve Root` olmak üzere üç bölüm açacağız.
 
 ```bash
 gdisk /dev/[disk ismi]
 ```
 
 - [disk ismi] = bölümlenecek disk, `lsblk` ile diskinizi bulabilirsiniz.
+- Swap bölümü RAM miktarınıza göre değişir. Swap bölümüne ne kadar ayırmanız gerektiğini şu şekilde belirleyebilirsiniz:
+- 512MB ile 2GB arasında bir RAM varsa RAM miktarının 1.5 katı
+- 2-16GB arasında bir RAM varsa RAM miktarı kadar
+- 16GB üzerinde RAM bulunuyorsa 16GB
+- swap alanı olmalıdır.
 
 ```
+g = GPT partition tablosu oluşturun
+
 n = Yeni bölüm
 enter tuşuna bas = ilk bölüm
 enter tuşuna bas = ilk sektör olarak
 +512M = son sektör olarak (Boot bölüm boyutu)
 ef00 = EFI bölüm tipi
 
-n = Tekrardan yeni bölüm
+n = Yeni bölüm
 enter tuşuna bas = 2. bölüm
+enter tuşuna bas = ilk sektör
++8G = son sektör olarak(Swap alanı boyutu. Siz bunu 4GB değil, RAM'inize bağlı olarak farklı bir değer de yapabilirsiniz)
+8200 = Swap bölüm tipi
+
+n = Tekrardan yeni bölüm
+enter tuşuna bas = 3. bölüm
 enter tuşuna bas = ilk sektör olarak
 enter tuşuna bas = son sektör olarak [Root bölüm boyutu (kalan diski kullanarak)]
 8300 ya da enter tuşuna bas = EXT4 Root bölüm tipi
@@ -82,6 +94,7 @@ w = kaydet ve çık
 
 ```
 mkfs.fat -F32 /dev/[efi bölüm adı]
+mkswap /dev/[swap bölüm adı]
 mkfs.ext4 /dev/[root bölüm adı]
 ```
 
@@ -89,6 +102,7 @@ mkfs.ext4 /dev/[root bölüm adı]
 
 ```
 mount /dev/[root bölüm adı] /mnt
+swapon /dev/[swap bölüm adı]
 mkdir /mnt/boot/efi
 mount /dev/[efi bölüm adı] /mnt/boot/efi
 ```
@@ -97,36 +111,68 @@ mount /dev/[efi bölüm adı] /mnt/boot/efi
 
 ### Disk Bölümleme (MBR için)
 
-`cfdisk` aracı ile diskimizde `Swap ve Root` olmak üzere iki bölüm oluşturacağız.
-
-- Eğer diskiniz yeni ise ve bölümleme tablosu bulunamadıysa, `msdos` seçeneğini seçerek MSDos Bölümleme Tablosu oluşturun.
+`fdisk` aracı ile diskimizde `Boot, Swap ve Root` olmak üzere üç bölüm oluşturacağız.
 
 ```bash
-cfdisk /dev/[disk ismi]
+fdisk /dev/[disk ismi]
 ```
 
 - [disk ismi] = bölümlenecek disk, `lsblk` ile diskinizi bulabilirsiniz.
-- Swap bölümü RAM miktarınızın iki katı olmalı. 16GB ve üstü RAM'iniz varsa gerek yok.
+- Swap bölümü RAM miktarınıza göre değişir. Swap bölümüne ne kadar ayırmanız gerektiğini şu şekilde belirleyebilirsiniz:
+- 512MB ile 2GB arasında bir RAM varsa RAM miktarının 1.5 katı
+- 2-16GB arasında bir RAM varsa RAM miktarı kadar
+- 16GB üzerinde RAM bulunuyorsa 16GB
+- swap alanı olmalıdır.
+
+```
+o = DOS bölümleme tablosu oluşturun
+
+n = Yeni bölüm
+p = primary olarak seç
+enter tuşuna bas = 1. bölüm
+enter tuşuna bas = ilk sektör olarak
++600M = son sektör olarak(600MB boyut vermiş olduk. bu bölüm boot bölümümüz olacak)
+
+n = Yeni bölüm
+p = primary olarak seç
+enter tuşuna bas = 2. bölüm
+enter tuşuna bas = ilk sektör olarak
++4G = son sektör olarak(4GB yerine farklı miktarda bir yer de ayırabilirsiniz RAMinize göre. ben örnek olarak 4G yazdım.)
+
+n = Yeni bölüm
+p = primary olarak seç
+enter tuşuna bas = 3. bölüm
+enter tuşuna bas = ilk sektör olarak
+enter tuşuna bas = son sektör olarak diskin kalanının tamamını kullan(bu bölüm root bölümü olacak)
+
+t = disk tipini değiştir
+2 = 2. bölüm olan swap için ayrılacak bölümü seç
+82 = Swap bölüm olarak ayarla
+
+w = değişiklikleri kaydet ve çık
+```
+
 
 ### Bölümleri Formatlama, SWAP Oluşturup Root'u Bağlama (MBR)
 
-#### ROOT Bölümünü EXT4 Olarak Formatlama
+#### Root ve Boot Bölümlerini EXT4 Olarak Formatlama (MBR)
 
 ```bash
 mkfs.ext4 /dev/[root bölüm adı]
+mkfs.ext4 /dev/[boot bölüm adı]
 ```
 
-#### Swap Bölümünü Ayarlayıp Aktifleştir (MBR)
+#### Swap Bölümünü Formatla (MBR)
 
 ```bash
 mkswap /dev/[swap bölüm adı]
-swapon /dev/[swap bölüm adı]
 ```
 
-#### Root Bölümünü Bağla (MBR)
+#### Bölümleri Bağla (MBR)
 
 ```bash
 mount /dev/[root bölüm adı] /mnt
+swapon /dev/[swap bölüm adı]
 ```
 
 ## Asıl Sistem Kurulumu
@@ -142,7 +188,7 @@ reflector -c Turkey -p http --save /etc/pacman.d/mirrorlist
 ### Ana Sistemi Kur
 
 ```bash
-pacstrap /mnt base base-devel linux-lts linux-firmware linux-lts-headers nano intel-ucode
+pacstrap /mnt base linux linux-firmware linux-headers nano intel-ucode sudo
 ```
 
 - `nano` yerine kendi editörünüzü seçebilirsiniz (örneğin `vim` ya da `vi`).
@@ -158,25 +204,6 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 ```bash
 arch-chroot /mnt
-```
-
-### Swap Dosyası Oluştur (UEFI için)
-
-`count=4096` değerini RAM miktarınızın iki katı ile değiştirin. 16GB üstü RAM'iniz varsa gerek yok.
-
-```bash
-dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-```
-
-### Swap Dosyasını `/etc/fstab` Dosyasına Ekleme (UEFI için)
-
-Alttaki satırı `/etc/fstab` dosyasının en altına ekleyin.
-
-```
-/swapfile none swap defaults 0 0
 ```
 
 ### Saati ve Tarihi Ayarla
@@ -196,9 +223,10 @@ Kendi saat diliminize göre `/Europe/Istanbul` kısmını değişebilirsiniz. Da
 nano /etc/locale.gen
 ```
 
-Alttaki satırı bulup başındaki yorumu kaldırın.
+Alttaki iki satırı bulup başlarındaki yorumları kaldırın. Sisteminizde İngilizce(zorunlu) ve kullanmak istediğiniz diğer dil paketleri(Türkçe gibi) bulunmalı.
 
 ```bash
+#en_US.UTF-8 UTF-8
 #tr_TR.UTF-8 UTF-8
 ```
 
@@ -215,17 +243,19 @@ locale-gen
 ```bash
 echo LANG=tr_TR.UTF-8 > /etc/locale.conf
 ```
+tr_TR.UTF-8 yerine İngilizce kullanmak isterseniz en_US.UTF-8 yazabilirsiniz.
 
 ### vconsole'a Klavye Düzenini Ekle
 
 ```bash
 echo "KEYMAP=trq" > /etc/vconsole.conf
 ```
+trq yerine siz isterseniz farklı bir klavye düzeni kullanabilirsiniz. Yani eğer İngilizce veya başka bir dilde klavye kullanıyorsanız trq yerine o dilin klavye düzenini yazmalısınız.
 
 ## Bilgisayar Adını Ayarla
 
 ```bash
-echo arch > /etc/hostname
+echo "arch" > /etc/hostname
 ```
 
 `arch` kısmını bilgisayara koyacağınız isim ile değiştirin.
@@ -277,6 +307,7 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 ```bash
 grub-install /dev/[disk adı]
 ```
+Burada disk adı derken, bölüm adı değil, direkt diskin adını veriyoruz.
 
 #### GRUB Yapılandırma Dosyasını Oluştur
 
@@ -288,7 +319,6 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 ```bash
 exit
-umount -a
 reboot
 ```
 
@@ -321,7 +351,7 @@ EDITOR=nano visudo
 Alttaki satırı bulup yorumu kaldırın.
 
 ```bash
-#%wheel ALL=(ALL) ALL
+# %wheel ALL=(ALL) ALL
 ```
 
 kaydedin ve çıkın.
@@ -366,6 +396,8 @@ pacman -S [masaüstü ortamı]
 | KDE Plasma      | plasma      |
 | LXDE            | lxde        |
 
+Sizin tercihiniz ama ben kendi düşüncelerimden bir tavsiye vereyim: minimal olsun diye gnome-shell indirmeyin. İçinde ayarlar menüsü veya terminal dahi gelmiyor bomboş bir ekrana bakıp kalıyorsunuz.\
+Eğer KDE Plasma kullanmayı tercih edecekseniz, plasma paketinin yanında plasma-wayland-session ve kde-applications paketlerini de kurmalısınız. 
 Daha fazlası için **[bu sayfayı](https://wiki.archlinux.org/title/Desktop_environment)** ziyaret edin.
 
 ### Görüntü Yöneticisi Kur
@@ -408,6 +440,15 @@ cd yay
 makepkg -sri
 ```
 
+### Neofetch
+Neofetch, terminal üzerinden sistemle ilgili pek çok bilgiyi öğrenmenizi sağlayan bir komut satırı aracıdır.\
+Daha çok SS almak için kullanılır. İnternette gördüğünüz o terminalde dağıtımın logosu bulunan ve yanında sistemle ilgili parametreler bulunan [bunun gibi](https://covid.b-cdn.net/linux3/posts/manjaro-linux-vs-arch-linux/8768a55f1d51af01c1b37d234f4e3836d69408c482d7a50848fcb126e694a50f.png) ekran fotoğraflarındaki terminalde o görüntüyü elde etmek için genellikle kullanılır.
+```bash
+sudo pacman -S neofetch
+```
+komutunu kullanarak indirebilir ve terminale `neofetch` yazarak kullanabilirsiniz.
+
+
 ## PulseEffects
 
 Eğer ekolayzır ayarlarına ihtiyacınız varsa PulseEffects aracını kullanabilirsiniz.
@@ -427,6 +468,17 @@ pacman -S ttf-dejavu ttf-droid noto-fonts noto-fonts-emoji ttf-roboto
 ```
 
 ## Performans İyileştirmeleri
+
+### Swappiness ayarı
+Swappiness, kernel'ın RAM'den depolama birimine dosya taşıma alışkanlığının dengesiyle ilgili
+bir sistem değişkenidir. Ne kadar yüksek olursa, sistem RAM'den depolama birimine o kadar sık veri taşır.\
+RAM'de alan kalmadığında swap alanı RAM gibi kullanılır. Ama tabii bu çok sık olduğunda hızı düşüren bir durumdur
+çünkü depolama birimleri olan HDD ve SSD'ler RAM'lerden kat kat yavaştır.\
+Eğer çok düşük bir RAM'iniz yoksa swappiness değerini düşürmek sisteminizi çok daha hızlı hale getirecektir.\
+Swappiness varsayılan olarak 60'tır. Örnek olarak bunu 10'a düşürebilirsiniz:
+```
+sudo sysctl vm.swappiness=10
+```
 
 ### paccache
 

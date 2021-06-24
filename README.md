@@ -78,7 +78,7 @@ ef00 = EFI bölüm tipi
 n = Yeni bölüm
 enter tuşuna bas = 2. bölüm
 enter tuşuna bas = ilk sektör
-+8G = son sektör olarak(Swap alanı boyutu. Siz bunu 4GB değil, RAM'inize bağlı olarak farklı bir değer de yapabilirsiniz)
++4G = son sektör olarak(Swap alanı boyutu. Siz bunu 4GB değil, RAM'inize bağlı olarak farklı bir değer de yapabilirsiniz)
 8200 = Swap bölüm tipi
 
 n = Tekrardan yeni bölüm

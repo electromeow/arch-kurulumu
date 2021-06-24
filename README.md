@@ -47,7 +47,8 @@ timedatectl set-ntp true
 
 ## Diski Kurulum İçin Ayarlama
 
-> :warning: Disklerinizi yönetirken son derece dikkatli olun, verileriniz silinirse beni suçlamayın.
+> :warning: Disklerinizi yönetirken son derece dikkatli olun, verileriniz silinirse beni suçlamayın.\
+> Eğer bir VirtualBox sanal makinesine kuruyorsanız, MBR için olan adımları izleyin disk bölümlemesi ve GRUB kurulumu için. Veya makine ayarları > sistem bölümünden EFI'yi etkinleştir seçeneğini işaretleyin ve UEFI için olan adımları izleyin.
 
 ## UEFI Sistem İçin
 
